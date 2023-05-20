@@ -3,14 +3,14 @@ using UnityEditor;
 using UnityEngine;
 
 [ExecuteAlways]
-public class CoordinateLabler : MonoBehaviour
+public class CoordinateLabeler : MonoBehaviour
 {
-    private TextMeshPro _label;
-    private Vector2Int _coordinate;
+    private TextMeshPro label;
+    private Vector2Int coordinate;
 
     void Awake()
     {
-        _label = GetComponent<TextMeshPro>();
+        label = GetComponent<TextMeshPro>();
     }
 
     void Update()
@@ -25,20 +25,19 @@ public class CoordinateLabler : MonoBehaviour
 
     void UpdateObjectName()
     {
-        transform.parent.name = _coordinate.ToString();
+        transform.parent.name = coordinate.ToString();
     }
 
     void DisplayCoordinates()
     {
         FillCoordinates();
-        
-        _label.text = $"{_coordinate.x},{_coordinate.y}";
+        label.text = $"{coordinate.x},{coordinate.y}";
     }
 
     void FillCoordinates()
     {
         var parentPosition = transform.parent.position;
-        _coordinate.x = Mathf.RoundToInt(parentPosition.x / EditorSnapSettings.move.x);
-        _coordinate.y = Mathf.RoundToInt(parentPosition.z / EditorSnapSettings.move.z);
+        coordinate.x = Mathf.RoundToInt(parentPosition.x / EditorSnapSettings.move.x);
+        coordinate.y = Mathf.RoundToInt(parentPosition.z / EditorSnapSettings.move.z);
     }
 }
