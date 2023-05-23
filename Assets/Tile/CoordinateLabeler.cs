@@ -35,7 +35,6 @@ public class CoordinateLabeler : MonoBehaviour
         {
             label.text = $"{coordinate.x},{coordinate.y}";
         }
-
     }
 
     void FillCoordinates()
