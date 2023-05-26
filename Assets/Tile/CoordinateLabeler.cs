@@ -41,7 +41,7 @@ public class CoordinateLabeler : MonoBehaviour
 
     void ColorCoordinates()
     {
-        if (waypoint == null)
+        if (waypoint == null && label == null || !label.enabled)
             return;
         
         if (waypoint.IsPlaceable)
