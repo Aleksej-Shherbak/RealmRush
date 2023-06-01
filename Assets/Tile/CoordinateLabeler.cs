@@ -1,3 +1,4 @@
+using Pathfinding;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -8,14 +9,18 @@ public class CoordinateLabeler : MonoBehaviour
 {
     [SerializeField] private Color defaultColor = Color.white;
     [SerializeField] private Color blockedColor = Color.gray;
+    [SerializeField] private Color exploredColor = Color.yellow;
+    [SerializeField] private Color pathColor = new Color(1f, 0.5f, 0f);
+    
+    
     private TextMeshPro label;
-    private Vector2Int coordinate;
-    private Waypoint waypoint;
+    private Vector2Int coordinates;
+    private GridManager gridManager;
 
     void Awake()
     {
+        gridManager = GetComponent<GridManager>();
         label = GetComponent<TextMeshPro>();
-        waypoint = GetComponentInParent<Waypoint>();
         label.enabled = false;
         
         DisplayCoordinates();
@@ -36,25 +41,33 @@ public class CoordinateLabeler : MonoBehaviour
 
     void UpdateObjectName()
     {
-        transform.parent.name = coordinate.ToString();
+        transform.parent.name = coordinates.ToString();
     }
 
     void SetLabelColor()
     {
-        if (waypoint.IsPlaceable)
-        {
-            label.color = defaultColor;
-        }
-        else
-        {
+        if (gridManager == null)
+            return;
+
+        var node = gridManager.GetNode(coordinates);
+        
+        if (node == null)
+            return;
+
+        if (!node.isWalkable)
             label.color = blockedColor;
-        }
+        else if (node.isPath)
+            label.color = pathColor;
+        else if (node.isExplored)
+            label.color = exploredColor;
+        else
+            label.color = defaultColor;
     }
 
     void DisplayCoordinates()
     {
         FillCoordinates();
-        label.text = $"{coordinate.x},{coordinate.y}";
+        label.text = $"{coordinates.x},{coordinates.y}";
     }
 
     void ToggleLabels()
@@ -66,7 +79,7 @@ public class CoordinateLabeler : MonoBehaviour
     void FillCoordinates()
     {
         var parentPosition = transform.parent.position;
-        coordinate.x = Mathf.RoundToInt(parentPosition.x / EditorSnapSettings.move.x);
-        coordinate.y = Mathf.RoundToInt(parentPosition.z / EditorSnapSettings.move.z);
+        coordinates.x = Mathf.RoundToInt(parentPosition.x / EditorSnapSettings.move.x);
+        coordinates.y = Mathf.RoundToInt(parentPosition.z / EditorSnapSettings.move.z);
     }
 }
